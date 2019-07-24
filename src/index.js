@@ -18,7 +18,9 @@ export default function () {
 
       const startTimeFormatted = this.moment(this.startTime).format('M/D/YYYY h:mm:ss a');
 
-      this.slack.sendMessage(`${emojis.rocket} ${'Starting TestCafe:'} ${bold(startTimeFormatted)}\n${emojis.computer} Running ${bold(testCount)} tests in: ${bold(userAgents)}\n`)
+      if (loggingLevel !== LoggingLevels.MINIMAL) {
+        this.slack.sendMessage(`${emojis.rocket} ${'Starting TestCafe:'} ${bold(startTimeFormatted)}\n${emojis.computer} Running ${bold(testCount)} tests in: ${bold(userAgents)}\n`)
+      }
     },
 
     reportFixtureStart(name, path) {
@@ -40,7 +42,9 @@ export default function () {
         message = `${emojis.checkMark} ${italics(name)}`
       }
 
-      if (loggingLevel === LoggingLevels.TEST) this.slack.addMessage(message);
+      if (loggingLevel === LoggingLevels.TEST || (hasErr && loggingLevel === LoggingLevels.MINIMAL)) {
+        this.slack.addMessage(message);
+      }
     },
 
     renderErrors(errors) {
@@ -70,6 +74,9 @@ export default function () {
 
       const message = `\n\n${finishedStr} ${durationStr} ${summaryStr}`;
 
+      if (loggingLevel === LoggingLevels.MINIMAL && !result.failedCount) {
+        return;
+      }
       this.slack.addMessage(message);
       this.slack.sendTestReport(this.testCount - passed);
     }

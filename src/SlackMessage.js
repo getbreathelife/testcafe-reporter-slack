@@ -37,7 +37,7 @@ export default class SlackMessage {
   }
 
   sendTestReport(nrFailedTests) {
-    this.sendMessage(this.getTestReportMessage(), nrFailedTests > 0 && this.loggingLevel === loggingLevels.TEST
+    this.sendMessage(this.getTestReportMessage(), nrFailedTests > 0 && this.loggingLevel !== loggingLevels.SUMMARY
       ? {
         "attachments": [{
           color: 'danger',
@@ -52,7 +52,7 @@ export default class SlackMessage {
     let message = this.getSlackMessage();
     let errorMessage = this.getErrorMessage();
 
-    if (errorMessage.length > 0 && this.loggingLevel === loggingLevels.TEST) {
+    if (errorMessage.length > 0 && this.loggingLevel !== loggingLevels.SUMMARY) {
       message = message + "\n\n\n```" + this.getErrorMessage() + '```';
     }
     return message;

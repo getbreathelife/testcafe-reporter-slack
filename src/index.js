@@ -18,7 +18,7 @@ export default function () {
 
       const startTimeFormatted = this.moment(this.startTime).format('M/D/YYYY h:mm:ss a');
 
-      if (loggingLevel !== LoggingLevels.MINIMAL) {
+      if (loggingLevel !== LoggingLevels.FAILURE) {
         this.slack.sendMessage(`${emojis.rocket} ${'Starting TestCafe:'} ${bold(startTimeFormatted)}\n${emojis.computer} Running ${bold(testCount)} tests in: ${bold(userAgents)}\n`)
       }
     },
@@ -42,7 +42,7 @@ export default function () {
         message = `${emojis.checkMark} ${italics(name)}`
       }
 
-      if (loggingLevel === LoggingLevels.TEST || (hasErr && loggingLevel === LoggingLevels.MINIMAL)) {
+      if (loggingLevel === LoggingLevels.TEST || (hasErr && loggingLevel === LoggingLevels.FAILURE)) {
         this.slack.addMessage(message);
       }
     },
@@ -74,7 +74,7 @@ export default function () {
 
       const message = `\n\n${finishedStr} ${durationStr} ${summaryStr}`;
 
-      if (loggingLevel === LoggingLevels.MINIMAL && !result.failedCount) {
+      if (loggingLevel === LoggingLevels.FAILURE && !result.failedCount) {
         return;
       }
       this.slack.addMessage(message);

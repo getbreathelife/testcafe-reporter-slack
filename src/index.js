@@ -29,9 +29,13 @@ export default function () {
       if (loggingLevel === LoggingLevels.TEST) this.slack.addMessage(bold(this.currentFixtureName));
     },
 
-    reportTestDone(name, testRunInfo) {
+    reportTestDone(name, testRunInfo, meta) {
       const hasErr = !!testRunInfo.errs.length;
       let message = null;
+
+      if (meta.url) {
+        this.slack.addMessage(`${emojis.rightArrow} Test URL: ${meta.url}`)
+      }
 
       if (testRunInfo.skipped) {
         message = `${emojis.fastForward} ${italics(name)} - ${bold('skipped')}`;
